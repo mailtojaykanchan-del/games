@@ -49,3 +49,23 @@ s=ball({x:332,vx:160,y:120});context.pongStep(s,.02);assert.ok(s.vx<0);
 s=ball({x:-5,vx:-160,y:20});assert.equal(context.pongStep(s,.02),'bot');
 s=ball({x:365,vx:160,y:20});assert.equal(context.pongStep(s,.02),'player');
 console.log('Passed: Pong wall and paddle bounces, missed balls, scoring both sides.');
+include('makeMaze','maze');
+include('lightCross','lights');
+include('guessResult','guess');
+for(let trial=0;trial<100;trial++){
+  const cells=context.makeMaze();const visited=new Set([12]),queue=[12];
+  while(queue.length){const at=queue.shift();for(const key of ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight']){const next=context.mazeStep(cells,at,key);if(!visited.has(next)){visited.add(next);queue.push(next);}}}
+  assert.ok(visited.has(108),'Maze exit must be reachable');
+  assert.equal(visited.size,cells.filter(v=>!v).length,'All paths connected');
+  assert.equal(context.mazeStep(cells,12,'ArrowUp'),12,'Walls block movement');
+  const {board,solution}=context.makeLights();assert.ok(board.some(Boolean));
+  // Arbitrary player moves must preserve a valid hint solution.
+  for(const index of [0,3,8,12,12]){context.flipLights(board,index);if(solution.has(index))solution.delete(index);else solution.add(index);}
+  for(const index of solution)context.flipLights(board,index);
+  assert.ok(board.every(v=>!v),'Hint sequence must solve the current board');
+}
+assert.deepEqual(Array.from(context.lightCross(0)).sort((a,b)=>a-b),[0,1,4]);
+assert.equal(context.guessResult('BALLOON',new Set('BALON')).won,true);
+assert.equal(context.guessResult('BALLOON',new Set('CDEFGH')).lost,true);
+assert.equal(context.guessResult('BALLOON',new Set('B')).misses,0);
+console.log('Passed: 100 connected mazes, 100 Lights Out hint solutions, Word Guess win/loss rules.');
