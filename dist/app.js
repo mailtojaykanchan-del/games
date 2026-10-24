@@ -1,10 +1,15 @@
 const games=[{id:'snake',name:'Snake',category:'Arcade',desc:'An old-school classic. A growing ambition.',time:'2–5 min',art:'<div class="snake-art">▟▙<br>▀▜●</div>',tag:'THE CLASSIC'},{id:'memory',name:'Memory Match',category:'Brain',desc:'A little focus. A perfect pair.',time:'2–3 min',art:'<div class="memory-art"><span>✦</span><span>?</span><span>?</span><span>✦</span></div>',tag:'STAY SHARP'},{id:'ttt',name:'Tic-Tac-Toe',category:'Brain',desc:'Three in a row. You know the drill.',time:'1–2 min',art:'<div class="ttt-art">×│○<br>─┼─<br>○│×</div>',tag:'YOU VS. BOT'},{id:'reaction',name:'Reaction Time',category:'Quick',desc:'Less thinking. More lightning reflexes.',time:'30 sec',art:'<div class="reaction-art">ϟ</div>',tag:'QUICK FIRE'},{id:'2048',name:'2048',category:'Brain',desc:'Slide, combine, and chase the big one.',time:'5–10 min',art:'<div class="tiles-art"><span>128</span><span>256</span></div>',tag:'ONE MORE MOVE'},{id:'words',name:'Word Scramble',category:'Quick',desc:'A little mixed up. A lot of fun.',time:'2–3 min',art:'<div class="words-art">P L A Y</div>',tag:'WORD PLAY'}];
 games.push(
-  {id:'mines',name:'Minesweeper',category:'Brain',desc:'Follow the clues. Find a safe path.',time:'3–5 min',art:'<div class="mines-art"><span>1</span><span>⚑</span><span>2</span><span>✦</span></div>',tag:'NEW · THINK AHEAD'},
-  {id:'connect',name:'Connect Four',category:'Brain',desc:'Four in a row. One clever move.',time:'3–5 min',art:'<div class="connect-art">● ● ○<br>○ ● ○<br>● ○ ●</div>',tag:'NEW · YOU VS. BOT'},
-  {id:'sliding',name:'Sliding Puzzle',category:'Brain',desc:'A small shuffle. A satisfying finish.',time:'2–5 min',art:'<div class="sliding-art"><span>1</span><span>2</span><span>3</span><span></span></div>',tag:'NEW · MAKE A MOVE'}
+  {id:'mines',name:'Minesweeper',category:'Brain',desc:'Follow the clues. Find a safe path.',time:'3–5 min',art:'<div class="mines-art"><span>1</span><span>⚑</span><span>2</span><span>✦</span></div>',tag:' THINK AHEAD'},
+  {id:'connect',name:'Connect Four',category:'Brain',desc:'Four in a row. One clever move.',time:'3–5 min',art:'<div class="connect-art">● ● ○<br>○ ● ○<br>● ○ ●</div>',tag:' YOU VS. BOT'},
+  {id:'sliding',name:'Sliding Puzzle',category:'Brain',desc:'A small shuffle. A satisfying finish.',time:'2–5 min',art:'<div class="sliding-art"><span>1</span><span>2</span><span>3</span><span></span></div>',tag:' MAKE A MOVE'}
 );
-const $=s=>document.querySelector(s),stage=$('#game-stage'),dialog=$('#game-dialog');let cleanup=()=>{},current=null,stats={};try{stats=JSON.parse(localStorage.getItem('pocket-arcade-stats')||'{}')}catch{}function save(id,value,lower=false){if(stats[id]==null||(lower?value<stats[id]:value>stats[id])){stats[id]=value;try{localStorage.setItem('pocket-arcade-stats',JSON.stringify(stats))}catch{}}}function status(s){$('#game-status').textContent=s}function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}function render(filter='all'){$('#cards').innerHTML=games.filter(g=>filter==='all'||g.category===filter).map(g=>`<button class="card" data-game="${g.id}" aria-label="Play ${g.name}"><div class="art art-${g.id}"><span class="tag">${g.tag}</span><div class="illustration">${g.art}</div></div><div class="card-info"><div class="card-title"><h3>${g.name}</h3><span>↗</span></div><p>${g.desc}</p><div class="card-meta"><span>${g.category.toUpperCase()}</span><span>◷ ${g.time}</span></div></div></button>`).join('');document.querySelectorAll('[data-game]').forEach(b=>b.onclick=()=>openGame(b.dataset.game))}render();document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{document.querySelector('.filters .selected').classList.remove('selected');b.classList.add('selected');render(b.dataset.filter)});$('#surprise').onclick=()=>openGame(games[Math.floor(Math.random()*games.length)].id);function openGame(id){cleanup();current=id;const g=games.find(g=>g.id===id);$('#game-title').textContent=g.name;$('#game-category').textContent=g.category;stage.innerHTML='';status('');if(!dialog.open)dialog.showModal();({snake,memory,ttt,reaction,'2048':tiles,words,mines,connect,sliding})[id]()}$('#restart').onclick=()=>openGame(current);$('#close-game').onclick=()=>dialog.close();dialog.addEventListener('close',()=>cleanup());$('#stats-button').onclick=()=>{$('#stats-list').innerHTML=games.map(g=>`<div class="stat-row"><span>${g.name}</span><strong>${stats[g.id]??'Not played'}${stats[g.id]!=null?({snake:' points',memory:' moves',ttt:' wins',reaction:' ms','2048':' points',words:' solved',mines:' wins',connect:' wins',sliding:' moves'}[g.id]):''}</strong></div>`).join('');$('#stats-dialog').showModal()};$('#close-stats').onclick=()=>$('#stats-dialog').close();function instructions(t){$('#instructions').textContent=t}function directions(handler){const el=document.createElement('div');el.className='controls';[['←','ArrowLeft'],['↑','ArrowUp'],['↓','ArrowDown'],['→','ArrowRight']].forEach(([label,key])=>{let b=document.createElement('button');b.textContent=label;b.setAttribute('aria-label',key.replace('Arrow','Move '));b.onclick=()=>handler(key);el.append(b)});stage.append(el)}
+games.push(
+{id:'pong',name:'Pong',category:'Arcade',desc:'A tiny court. A timeless rivalry.',time:'2–5 min',art:'<div class="pong-art">▌ · ● · ▐</div>',tag:'NEW · RALLY TIME'},
+{id:'moles',name:'Whack-a-Mole',category:'Quick',desc:'Catch a little mischief before it hides.',time:'30 sec',art:'<div class="mole-art">●ᴥ●</div>',tag:'NEW · QUICK TAPS'},
+{id:'simon',name:'Simon Says',category:'Brain',desc:'Watch the pattern. Keep the rhythm.',time:'2–5 min',art:'<div class="simon-art"><span>1</span><span>2</span><span>3</span><span>4</span></div>',tag:'NEW · REPEAT AFTER ME'}
+);
+const $=s=>document.querySelector(s),stage=$('#game-stage'),dialog=$('#game-dialog');let cleanup=()=>{},current=null,stats={};try{stats=JSON.parse(localStorage.getItem('pocket-arcade-stats')||'{}')}catch{}function save(id,value,lower=false){if(stats[id]==null||(lower?value<stats[id]:value>stats[id])){stats[id]=value;try{localStorage.setItem('pocket-arcade-stats',JSON.stringify(stats))}catch{}}}function status(s){$('#game-status').textContent=s}function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}function render(filter='all'){$('#cards').innerHTML=games.filter(g=>filter==='all'||g.category===filter).map(g=>`<button class="card" data-game="${g.id}" aria-label="Play ${g.name}"><div class="art art-${g.id}"><span class="tag">${g.tag}</span><div class="illustration">${g.art}</div></div><div class="card-info"><div class="card-title"><h3>${g.name}</h3><span>↗</span></div><p>${g.desc}</p><div class="card-meta"><span>${g.category.toUpperCase()}</span><span>◷ ${g.time}</span></div></div></button>`).join('');document.querySelectorAll('[data-game]').forEach(b=>b.onclick=()=>openGame(b.dataset.game))}render();document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{document.querySelector('.filters .selected').classList.remove('selected');b.classList.add('selected');render(b.dataset.filter)});$('#surprise').onclick=()=>openGame(games[Math.floor(Math.random()*games.length)].id);function openGame(id){cleanup();current=id;const g=games.find(g=>g.id===id);$('#game-title').textContent=g.name;$('#game-category').textContent=g.category;stage.innerHTML='';status('');if(!dialog.open)dialog.showModal();({snake,memory,ttt,reaction,'2048':tiles,words,mines,connect,sliding,pong,moles,simon})[id]()}$('#restart').onclick=()=>openGame(current);$('#close-game').onclick=()=>dialog.close();dialog.addEventListener('close',()=>cleanup());$('#stats-button').onclick=()=>{$('#stats-list').innerHTML=games.map(g=>`<div class="stat-row"><span>${g.name}</span><strong>${stats[g.id]??'Not played'}${stats[g.id]!=null?({snake:' points',memory:' moves',ttt:' wins',reaction:' ms','2048':' points',words:' solved',mines:' wins',connect:' wins',sliding:' moves',pong:' wins',moles:' hits',simon:' rounds'}[g.id]):''}</strong></div>`).join('');$('#stats-dialog').showModal()};$('#close-stats').onclick=()=>$('#stats-dialog').close();function instructions(t){$('#instructions').textContent=t}function directions(handler){const el=document.createElement('div');el.className='controls';[['←','ArrowLeft'],['↑','ArrowUp'],['↓','ArrowDown'],['→','ArrowRight']].forEach(([label,key])=>{let b=document.createElement('button');b.textContent=label;b.setAttribute('aria-label',key.replace('Arrow','Move '));b.onclick=()=>handler(key);el.append(b)});stage.append(el)}
 function snake(){instructions('Use arrow keys, WASD, or the buttons to steer. Take it easy at the new slower pace. Eat the orange snacks and avoid the walls and your tail.');stage.innerHTML='<canvas width="320" height="320" aria-label="Snake game board"></canvas>';let ctx=stage.querySelector('canvas').getContext('2d'),body=[{x:7,y:8},{x:6,y:8},{x:5,y:8}],dir={x:1,y:0},next=dir,food,score=0,ended=false,started=false;function snack(){let empty=[];for(let y=0;y<16;y++)for(let x=0;x<16;x++)if(!body.some(p=>p.x===x&&p.y===y))empty.push({x,y});food=empty[Math.floor(Math.random()*empty.length)]}snack();function draw(){ctx.fillStyle='#dbe3c8';ctx.fillRect(0,0,320,320);ctx.strokeStyle='#cbd5b8';for(let i=0;i<16;i++){ctx.beginPath();ctx.moveTo(i*20,0);ctx.lineTo(i*20,320);ctx.moveTo(0,i*20);ctx.lineTo(320,i*20);ctx.stroke()}body.forEach((p,i)=>{ctx.fillStyle=i?'#52714b':'#2c4d36';ctx.fillRect(p.x*20+1,p.y*20+1,18,18)});if(food){ctx.fillStyle='#c57943';ctx.beginPath();ctx.arc(food.x*20+10,food.y*20+10,7,0,Math.PI*2);ctx.fill()}}function key(k){const d={ArrowLeft:{x:-1,y:0},a:{x:-1,y:0},ArrowRight:{x:1,y:0},d:{x:1,y:0},ArrowUp:{x:0,y:-1},w:{x:0,y:-1},ArrowDown:{x:0,y:1},s:{x:0,y:1}}[k];if(d&&!ended){started=true;if(d.x!==-dir.x||d.y!==-dir.y)next=d}}const onkey=e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','w','a','s','d'].includes(e.key)){e.preventDefault();key(e.key)}};document.addEventListener('keydown',onkey);directions(key);status('Press a direction to start.');draw();let timer=setInterval(()=>{if(!started||ended)return;dir=next;const h={x:body[0].x+dir.x,y:body[0].y+dir.y},eat=h.x===food.x&&h.y===food.y;if(h.x<0||h.x>15||h.y<0||h.y>15||body.slice(0,eat?body.length:-1).some(p=>p.x===h.x&&p.y===h.y)){ended=true;save('snake',score);status(`Game over · ${score} points`);return}body.unshift(h);if(eat){score+=10;snack();if(!food){ended=true;save('snake',score);status('You filled the board!');draw();return}}else body.pop();status(`Score: ${score}`);draw()},240);cleanup=()=>{clearInterval(timer);document.removeEventListener('keydown',onkey)}}
 function memory(){instructions('Flip two cards at a time and find all eight pairs. Fewer moves means a better score.');const symbols=shuffle(['✦','☀','☘','♥','☾','♫','⚑','◆'].flatMap(x=>[x,x]));stage.innerHTML='<div class="board memory-board"></div>';let first=null,locked=false,moves=0,matches=0,timer;symbols.forEach((s,i)=>{let b=document.createElement('button');b.textContent='?';b.setAttribute('aria-label',`Face-down card ${i+1}`);b.onclick=()=>{if(locked||b.disabled||b===first)return;b.textContent=s;b.setAttribute('aria-label',s);if(!first){first=b;return}moves++;if(first.textContent===s){first.disabled=b.disabled=true;first.style.background=b.style.background='#c4d5ad';first=null;matches++;if(matches===8){save('memory',moves,true);status(`All matched! ${moves} moves`)}else status(`${moves} moves · ${matches}/8 pairs`)}else{locked=true;let prev=first;timer=setTimeout(()=>{b.textContent=prev.textContent='?';b.setAttribute('aria-label',`Face-down card ${i+1}`);prev.setAttribute('aria-label','Face-down card');first=null;locked=false},800);status(`${moves} moves · ${matches}/8 pairs`)}};stage.firstChild.append(b)});status('Find your first pair.');cleanup=()=>clearTimeout(timer)}
 function ttt(){instructions('You are X. Get three in a row before the computer does.');let board=Array(9).fill(''),over=false,turn=true,timer;const lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];stage.innerHTML='<div class="board ttt-board"></div>';function finish(){let win=lines.find(l=>l.every(i=>board[i]&&board[i]===board[l[0]]));if(win){over=true;let you=board[win[0]]==='X';status(you?'You win! Nicely played.':'The computer wins. Try again!');if(you)save('ttt',(stats.ttt||0)+1);return true}if(board.every(Boolean)){over=true;status('A draw. Great minds think alike.');return true}return false}function paint(){[...stage.firstChild.children].forEach((b,i)=>{b.textContent=board[i];b.disabled=!!board[i]||over||!turn})}for(let i=0;i<9;i++){let b=document.createElement('button');b.setAttribute('aria-label',`Cell ${i+1}`);b.onclick=()=>{if(board[i]||over||!turn)return;board[i]='X';if(finish()){paint();return}turn=false;paint();status('Computer is thinking…');timer=setTimeout(()=>{const findMove=s=>{for(const l of lines){let free=l.filter(i=>!board[i]);if(free.length===1&&l.filter(i=>board[i]===s).length===2)return free[0]}};let free=board.map((v,i)=>v?-1:i).filter(i=>i>=0);let move=findMove('O')??findMove('X')??(!board[4]?4:free[Math.floor(Math.random()*free.length)]);board[move]='O';turn=true;if(!finish())status('Your turn · X');paint()},400)};stage.firstChild.append(b)}status('Your turn · X');cleanup=()=>clearTimeout(timer)}
@@ -176,4 +181,96 @@ function sliding() {
     });
   }
   paint();status('Slide a tile to get started.');cleanup=()=>{};
+}
+
+function pongStep(s, dt) {
+  s.x += s.vx * dt; s.y += s.vy * dt;
+  if (s.y < 6) { s.y = 6; s.vy = Math.abs(s.vy); }
+  if (s.y > 234) { s.y = 234; s.vy = -Math.abs(s.vy); }
+  if (s.vx < 0 && s.x <= 27 && s.x >= 14 && Math.abs(s.y-s.player) <= 35) {
+    s.x=27; s.vx=Math.min(260,Math.abs(s.vx)+8); s.vy=(s.y-s.player)*5;
+  }
+  if (s.vx > 0 && s.x >= 333 && s.x <= 346 && Math.abs(s.y-s.bot) <= 35) {
+    s.x=333; s.vx=-Math.min(260,Math.abs(s.vx)+8); s.vy=(s.y-s.bot)*5;
+  }
+  return s.x < -6 ? 'bot' : s.x > 366 ? 'player' : null;
+}
+function pong() {
+  instructions('You are the left paddle. Move with ↑ / ↓ or W / S, drag on the court, or use the slider. First to 5 points wins.');
+  stage.innerHTML='<canvas width="360" height="240" aria-label="Pong court: you on the left, computer on the right"></canvas><label class="paddle-label">Your paddle <input id="paddle" type="range" min="30" max="210" value="120" aria-label="Paddle position"></label><div class="controls"><button id="pong-start">Start match</button></div>';
+  const canvas=stage.querySelector('canvas'), ctx=canvas.getContext('2d'), slider=stage.querySelector('input'), button=stage.querySelector('#pong-start');
+  const s={x:180,y:120,vx:160,vy:65,player:120,bot:120};
+  let yours=0,theirs=0,running=false,over=false,frame,last=0,serve=0;const keys=new Set();
+  function score(){status(`You ${yours} · Computer ${theirs}${over?(yours===5?' · You win!':' · Computer wins.'):''}`);}
+  function resetBall(){s.x=180;s.y=120;s.vx=(Math.random()<.5?-1:1)*160;s.vy=(Math.random()<.5?-1:1)*65;serve=.7;}
+  function paint(){
+    ctx.fillStyle='#263e30';ctx.fillRect(0,0,360,240);ctx.strokeStyle='#77906a';ctx.setLineDash([5,9]);ctx.beginPath();ctx.moveTo(180,0);ctx.lineTo(180,240);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#d6e7aa';ctx.fillRect(14,s.player-30,8,60);ctx.fillStyle='#e9a16e';ctx.fillRect(338,s.bot-30,8,60);ctx.fillStyle='#f8f2da';ctx.beginPath();ctx.arc(s.x,s.y,6,0,Math.PI*2);ctx.fill();
+    if(!running&&!over){ctx.fillStyle='#f8f2da';ctx.font='16px sans-serif';ctx.textAlign='center';ctx.fillText(button.textContent==='Start match'?'Ready to rally?':'Paused',180,35);}
+  }
+  function tick(now){
+    const dt=Math.min((now-last)/1000||0,.025);last=now;
+    if(running&&!over){
+      const direction=(keys.has('ArrowDown')||keys.has('s')?1:0)-(keys.has('ArrowUp')||keys.has('w')?1:0);
+      s.player=Math.max(30,Math.min(210,s.player+direction*240*dt));slider.value=String(s.player);
+      s.bot=Math.max(30,Math.min(210,s.bot+Math.max(-105*dt,Math.min(105*dt,s.y-s.bot))));
+      if(serve>0)serve-=dt;else{
+        const winner=pongStep(s,dt);
+        if(winner){if(winner==='player')yours++;else theirs++;over=yours===5||theirs===5;if(over){running=false;button.disabled=true;button.textContent='Match finished';if(yours===5)save('pong',(stats.pong||0)+1);}else resetBall();score();}
+      }
+    }
+    paint();frame=requestAnimationFrame(tick);
+  }
+  function pause(){if(running){running=false;button.textContent='Resume match';keys.clear();}}
+  button.onclick=()=>{if(!over){running=!running;button.textContent=running?'Pause match':'Resume match';}};
+  slider.oninput=()=>{s.player=Number(slider.value);};
+  function point(e){const r=canvas.getBoundingClientRect();s.player=Math.max(30,Math.min(210,(e.clientY-r.top)/r.height*240));slider.value=String(s.player);}
+  canvas.onpointerdown=e=>{canvas.setPointerCapture(e.pointerId);point(e);};canvas.onpointermove=e=>{if(e.buttons||e.pointerType==='mouse')point(e);};
+  const keydown=e=>{if(['ArrowUp','ArrowDown','w','s'].includes(e.key)&&e.target!==slider){e.preventDefault();keys.add(e.key);}};
+  const keyup=e=>keys.delete(e.key); const visibility=()=>{if(document.hidden)pause();};
+  document.addEventListener('keydown',keydown);document.addEventListener('keyup',keyup);document.addEventListener('visibilitychange',visibility);window.addEventListener('blur',pause);
+  score();frame=requestAnimationFrame(tick);
+  cleanup=()=>{cancelAnimationFrame(frame);document.removeEventListener('keydown',keydown);document.removeEventListener('keyup',keyup);document.removeEventListener('visibilitychange',visibility);window.removeEventListener('blur',pause);};
+}
+function moles() {
+  instructions('Tap the mole before it hides. You have 30 seconds. Each mole counts once; empty holes do not count. You can also use keys 1–9.');
+  stage.innerHTML='<div class="board mole-board" aria-label="Whack-a-Mole holes"></div><div class="controls"><button id="mole-start">Start 30-second round</button></div>';
+  const grid=stage.querySelector('.mole-board'),start=stage.querySelector('#mole-start');
+  let score=0,active=-1,running=false,deadline=0,nextPop=0,timer;
+  function paint(){[...grid.children].forEach((b,i)=>{b.classList.toggle('up',i===active);b.textContent=i===active?'●ᴥ●':String(i+1);b.setAttribute('aria-label',`Hole ${i+1}: ${i===active?'mole':'empty'}`);b.disabled=!running;});}
+  function finish(){running=false;active=-1;clearInterval(timer);save('moles',score);paint();status(`Time’s up! ${score} hits · Best: ${stats.moles}`);start.textContent='Round finished';}
+  function hit(i){if(!running)return;if(performance.now()>=deadline){finish();return;}if(i===active){score++;active=-1;paint();status(`${score} hits · ${Math.ceil((deadline-performance.now())/1000)} seconds left`);}}
+  for(let i=0;i<9;i++){const b=document.createElement('button');b.onclick=()=>hit(i);grid.append(b);}
+  start.onclick=()=>{
+    if(running)return;running=true;deadline=performance.now()+30000;nextPop=0;start.disabled=true;start.textContent='Catch them!';
+    function tick(){const now=performance.now();if(now>=deadline){finish();return;}if(now>=nextPop){let choices=Array.from({length:9},(_,i)=>i).filter(i=>i!==active);active=choices[Math.floor(Math.random()*choices.length)];nextPop=now+850;paint();}status(`${score} hits · ${Math.ceil((deadline-now)/1000)} seconds left`);}
+    tick();timer=setInterval(tick,50);
+  };
+  const key=e=>{if(/^[1-9]$/.test(e.key)&&!e.repeat){e.preventDefault();hit(Number(e.key)-1);}};
+  document.addEventListener('keydown',key);paint();status('Ready for a quick round?');cleanup=()=>{clearInterval(timer);document.removeEventListener('keydown',key);};
+}
+function simon() {
+  instructions('Watch the numbered pads light up, then repeat the pattern. One new step is added each round. Click the pads or press keys 1–4.');
+  stage.innerHTML='<div class="simon-board" aria-label="Simon Says pads"></div><div class="controls"><button id="simon-start">Start pattern</button><button id="simon-replay" disabled>Replay pattern</button></div>';
+  const grid=stage.querySelector('.simon-board'),start=stage.querySelector('#simon-start'),replay=stage.querySelector('#simon-replay'),pads=[],sequence=[],timers=new Set();
+  let accepting=false,position=0,completed=0,over=false;
+  function later(fn,ms){const t=setTimeout(()=>{timers.delete(t);fn();},ms);timers.add(t);}
+  function lock(value){accepting=!value;pads.forEach(b=>b.disabled=value);replay.disabled=value;}
+  function flash(i,ms=450){pads[i].classList.add('lit');later(()=>pads[i].classList.remove('lit'),ms);}
+  function playback(){lock(true);position=0;pads.forEach(b=>b.classList.remove('lit'));status(`Round ${sequence.length} · Watch the pattern`);
+    sequence.forEach((v,i)=>later(()=>{flash(v);status(`Watch: ${v+1}`);},350+i*750));
+    later(()=>{lock(false);status(`Your turn · Repeat ${sequence.length} step${sequence.length===1?'':'s'}`);},350+sequence.length*750);
+  }
+  function next(){sequence.push(Math.floor(Math.random()*4));playback();}
+  function press(i){if(!accepting||over)return;flash(i,220);
+    if(i!==sequence[position]){over=true;lock(true);status(`Not quite! ${completed} rounds completed · Play again to retry.`);save('simon',completed);return;}
+    position++;
+    if(position===sequence.length){completed++;save('simon',completed);lock(true);status(`Round ${completed} complete!`);later(next,1000);}
+    else status(`Your turn · ${position}/${sequence.length} steps`);
+  }
+  ['Green','Orange','Blue','Purple'].forEach((color,i)=>{const b=document.createElement('button');b.textContent=String(i+1);b.className=`simon-pad pad-${i}`;b.setAttribute('aria-label',`${color} pad ${i+1}`);b.onclick=()=>press(i);grid.append(b);pads.push(b);});
+  start.onclick=()=>{start.disabled=true;start.textContent='Follow the pattern';next();};replay.onclick=()=>{if(accepting)playback();};
+  const key=e=>{if(/^[1-4]$/.test(e.key)&&!e.repeat){e.preventDefault();press(Number(e.key)-1);}};
+  document.addEventListener('keydown',key);lock(true);status('How long a pattern can you remember?');
+  cleanup=()=>{timers.forEach(clearTimeout);timers.clear();document.removeEventListener('keydown',key);};
 }
